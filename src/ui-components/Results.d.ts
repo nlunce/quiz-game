@@ -17,18 +17,16 @@ export declare type Variant = {
     overrides: EscapeHatchProps;
 };
 export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
-export declare type QuizOverridesProps = {
-    Quiz?: PrimitiveOverrideProps<FlexProps>;
+export declare type ResultsOverridesProps = {
+    Results?: PrimitiveOverrideProps<FlexProps>;
     "Frame 406"?: PrimitiveOverrideProps<FlexProps>;
-    Question?: PrimitiveOverrideProps<TextProps>;
-    "Option 1"?: PrimitiveOverrideProps<ButtonProps>;
-    "Option 2"?: PrimitiveOverrideProps<ButtonProps>;
-    "Option 3"?: PrimitiveOverrideProps<ButtonProps>;
-    "Option 4"?: PrimitiveOverrideProps<ButtonProps>;
+    Results3855595?: PrimitiveOverrideProps<TextProps>;
+    "Frame 408"?: PrimitiveOverrideProps<FlexProps>;
+    Score?: PrimitiveOverrideProps<TextProps>;
     "Frame 407"?: PrimitiveOverrideProps<FlexProps>;
     Button?: PrimitiveOverrideProps<ButtonProps>;
 } & EscapeHatchProps;
-export declare type QuizProps = React.PropsWithChildren<Partial<FlexProps> & {
-    overrides?: QuizOverridesProps | undefined | null;
+export declare type ResultsProps = React.PropsWithChildren<Partial<FlexProps> & {
+    overrides?: ResultsOverridesProps | undefined | null;
 }>;
-export default function Quiz(props: QuizProps): React.ReactElement;
+export default function Results(props: ResultsProps): React.ReactElement;

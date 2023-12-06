@@ -8,7 +8,7 @@
 import * as React from "react";
 import { getOverrideProps } from "./utils";
 import { Button, Flex, Text } from "@aws-amplify/ui-react";
-export default function Quiz(props) {
+export default function Results(props) {
   const { overrides, ...rest } = props;
   return (
     <Flex
@@ -22,7 +22,7 @@ export default function Quiz(props) {
       borderRadius="8px"
       padding="32px 32px 32px 32px"
       backgroundColor="rgba(250,250,250,1)"
-      {...getOverrideProps(overrides, "Quiz")}
+      {...getOverrideProps(overrides, "Results")}
       {...rest}
     >
       <Flex
@@ -31,7 +31,7 @@ export default function Quiz(props) {
         width="unset"
         height="unset"
         justifyContent="flex-start"
-        alignItems="flex-start"
+        alignItems="center"
         shrink="0"
         alignSelf="stretch"
         position="relative"
@@ -56,54 +56,45 @@ export default function Quiz(props) {
           position="relative"
           padding="0px 0px 0px 0px"
           whiteSpace="pre-wrap"
-          children="Question"
-          {...getOverrideProps(overrides, "Question")}
+          children="Results"
+          {...getOverrideProps(overrides, "Results3855595")}
         ></Text>
       </Flex>
-      <Button
+      <Flex
+        gap="24px"
+        direction="column"
         width="unset"
         height="unset"
+        justifyContent="flex-start"
+        alignItems="center"
         shrink="0"
         alignSelf="stretch"
-        size="large"
-        isDisabled={false}
-        variation="primary"
-        children="Option 1"
-        {...getOverrideProps(overrides, "Option 1")}
-      ></Button>
-      <Button
-        width="unset"
-        height="unset"
-        shrink="0"
-        alignSelf="stretch"
-        size="large"
-        isDisabled={false}
-        variation="primary"
-        children="Option 2"
-        {...getOverrideProps(overrides, "Option 2")}
-      ></Button>
-      <Button
-        width="unset"
-        height="unset"
-        shrink="0"
-        alignSelf="stretch"
-        size="large"
-        isDisabled={false}
-        variation="primary"
-        children="Option 3"
-        {...getOverrideProps(overrides, "Option 3")}
-      ></Button>
-      <Button
-        width="unset"
-        height="unset"
-        shrink="0"
-        alignSelf="stretch"
-        size="large"
-        isDisabled={false}
-        variation="primary"
-        children="Option 4"
-        {...getOverrideProps(overrides, "Option 4")}
-      ></Button>
+        position="relative"
+        padding="0px 0px 0px 0px"
+        {...getOverrideProps(overrides, "Frame 408")}
+      >
+        <Text
+          fontFamily="Inter"
+          fontSize="20px"
+          fontWeight="600"
+          color="rgba(13,26,38,1)"
+          lineHeight="30px"
+          textAlign="left"
+          display="block"
+          direction="column"
+          justifyContent="unset"
+          width="unset"
+          height="unset"
+          gap="unset"
+          alignItems="unset"
+          shrink="0"
+          position="relative"
+          padding="0px 0px 0px 0px"
+          whiteSpace="pre-wrap"
+          children="Score"
+          {...getOverrideProps(overrides, "Score")}
+        ></Text>
+      </Flex>
       <Flex
         gap="24px"
         direction="row"
@@ -124,7 +115,7 @@ export default function Quiz(props) {
           size="default"
           isDisabled={false}
           variation="primary"
-          children="Next"
+          children="Play Again"
           {...getOverrideProps(overrides, "Button")}
         ></Button>
       </Flex>
