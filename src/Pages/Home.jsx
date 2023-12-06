@@ -5,6 +5,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 
 const HomePage = () => {
   const apiKey = "";
+  s;
   const openai = new OpenAI({ apiKey, dangerouslyAllowBrowser: true });
 
   const navigate = useNavigate();
