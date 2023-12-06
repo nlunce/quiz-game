@@ -1,54 +1,97 @@
-import React from "react";
-import { Options, APIKeyForm } from "../ui-components";
+import React, { useState, useEffect } from "react";
+import { APIKeyForm } from "../ui-components";
 import OpenAI from "openai";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const HomePage = () => {
-  const apiKey = "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";
-  const openai = new OpenAI({ apiKey, dangerouslyAllowBrowser: true });
+  const [submit, setSubmit] = useState();
+  const [isSubmitting, setIsSubmitting] = useState();
+  const [play, setPlay] = useState(true);
+  const [apiKey, setApiKey] = useState("");
+  const [invalid, setInvalid] = useState("hidden");
+  const [apiKeyPlaceholder, setApiKeyPlaceholder] = useState("Enter API key");
 
   const navigate = useNavigate();
+
   function navigateHandler(page) {
     navigate(`/${page}`);
   }
 
-  async function openaiclient() {
-    const completion = await openai.chat.completions.create({
-      messages: [
-        {
-          role: "user",
-          content:
-            "Generate a JSON object with exaclty ten questions, each having four multiple-choice answers (options a, b, c, d), and indicate the correct answer for each question.",
-        },
-      ],
-      model: "gpt-3.5-turbo",
-    });
+  useEffect(() => {
+    const lsApiKey = localStorage.getItem("apiKey");
+    if (lsApiKey !== null) {
+      setPlay(false);
+      setSubmit(true);
+      setApiKey(lsApiKey);
+      setApiKeyPlaceholder(lsApiKey);
+    }
+  }, []);
 
-    console.log(completion.choices[0].message.content);
-  }
+  useEffect(() => {
+    const checkApiKey = async () => {
+      const isValid = await testApiKey(apiKey);
+      if (isValid) {
+        localStorage.setItem("apiKey", apiKey);
+        setInvalid("hidden");
+        setSubmit(true);
+        setPlay(false);
+      } else {
+        setInvalid("visible");
+      }
+    };
 
-  async function generateQuestions() {
-    const completion = await openai.chat.completions.create({
-      messages: [
-        {
-          role: "user",
-          content:
-            "Generate a JSON object with exaclty ten questions, each having four multiple-choice answers (options a, b, c, d), and indicate the correct answer for each question.",
-        },
-      ],
-      model: "gpt-3.5-turbo",
-    });
+    if (apiKey) {
+      checkApiKey();
+    }
+  }, [apiKey]);
 
-    console.log(completion.choices[0].message.content);
+  async function testApiKey(apiKey) {
+    const openai = new OpenAI({ apiKey, dangerouslyAllowBrowser: true });
+    try {
+      const completion = await openai.chat.completions.create({
+        messages: [
+          {
+            role: "user",
+            content: "Are you there?",
+          },
+        ],
+        model: "gpt-3.5-turbo",
+      });
+
+      console.log(completion.choices[0].message.content);
+      return true;
+    } catch (error) {
+      console.error("API Key test failed:", error);
+      return false;
+    }
   }
 
   const overrides = {
+    TextField: {
+      isDisabled: submit,
+      id: "apiKeyInput",
+      placeholder: apiKeyPlaceholder,
+    },
+    label: {
+      style: {
+        visibility: invalid,
+      },
+    },
     Play: {
+      isDisabled: play,
       onClick: () => {
-        navigateHandler("quiz");
+        navigateHandler("levels");
+      },
+    },
+    Submit: {
+      isDisabled: submit,
+      onClick: () => {
+        const apiKeyValue = document.getElementById("apiKeyInput").value;
+        setApiKey(apiKeyValue);
       },
     },
   };
+
   return (
     <>
       <APIKeyForm overrides={overrides} />

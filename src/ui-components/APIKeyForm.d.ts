@@ -5,7 +5,7 @@
  **************************************************************************/
 
 import * as React from "react";
-import { ButtonProps, FlexProps, TextFieldProps } from "@aws-amplify/ui-react";
+import { ButtonProps, FlexProps, TextFieldProps, TextProps } from "@aws-amplify/ui-react";
 export declare type EscapeHatchProps = {
     [elementHierarchy: string]: Record<string, unknown>;
 } | null;
@@ -19,9 +19,14 @@ export declare type Variant = {
 export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
 export declare type APIKeyFormOverridesProps = {
     APIKeyForm?: PrimitiveOverrideProps<FlexProps>;
+    "Frame 406"?: PrimitiveOverrideProps<FlexProps>;
+    "Welcome!"?: PrimitiveOverrideProps<TextProps>;
     TextField?: PrimitiveOverrideProps<TextFieldProps>;
+    "Frame 437"?: PrimitiveOverrideProps<FlexProps>;
+    label?: PrimitiveOverrideProps<TextProps>;
     Submit?: PrimitiveOverrideProps<ButtonProps>;
     Play?: PrimitiveOverrideProps<ButtonProps>;
+    Download?: PrimitiveOverrideProps<ButtonProps>;
 } & EscapeHatchProps;
 export declare type APIKeyFormProps = React.PropsWithChildren<Partial<FlexProps> & {
     overrides?: APIKeyFormOverridesProps | undefined | null;

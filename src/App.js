@@ -8,6 +8,7 @@ import {
   RootLayout,
   ErrorPage,
   HomePage,
+  LevelsPage,
   QuizPage,
   ResultsPage,
 } from "./Pages";
@@ -21,6 +22,7 @@ const router = createBrowserRouter([
     id: "root",
     children: [
       { index: true, element: <HomePage /> },
+      { path: "/levels", element: <LevelsPage /> },
       { path: "/quiz", element: <QuizPage /> },
       { path: "/results", element: <ResultsPage /> },
     ],
