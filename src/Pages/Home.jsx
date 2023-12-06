@@ -90,6 +90,11 @@ const HomePage = () => {
         setApiKey(apiKeyValue);
       },
     },
+    Download: {
+      onClick: () => {
+        window.open("https://github.com/jadabower/TriviaGame");
+      },
+    },
   };
 
   return (
