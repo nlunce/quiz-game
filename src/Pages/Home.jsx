@@ -4,7 +4,7 @@ import OpenAI from "openai";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 const HomePage = () => {
-  const apiKey = "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";
+  const apiKey = "";
   const openai = new OpenAI({ apiKey, dangerouslyAllowBrowser: true });
 
   const navigate = useNavigate();
