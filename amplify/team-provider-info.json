@@ -1,0 +1,15 @@
+{
+  "staging": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-quizgame-staging-10310-authRole",
+      "UnauthRoleArn": "arn:aws:iam::367985723387:role/amplify-quizgame-staging-10310-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::367985723387:role/amplify-quizgame-staging-10310-authRole",
+      "Region": "us-west-2",
+      "DeploymentBucketName": "amplify-quizgame-staging-10310-deployment",
+      "UnauthRoleName": "amplify-quizgame-staging-10310-unauthRole",
+      "StackName": "amplify-quizgame-staging-10310",
+      "StackId": "arn:aws:cloudformation:us-west-2:367985723387:stack/amplify-quizgame-staging-10310/39baf3c0-93d3-11ee-96d3-06b71b2c4d8f",
+      "AmplifyAppId": "d2jir32rtcjasl"
+    }
+  }
+}
