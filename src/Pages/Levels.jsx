@@ -9,15 +9,6 @@ const LevelsPage = () => {
   const navigate = useNavigate();
   const [showNext, setShowNext] = useState("hidden");
 
-  // useEffect(() => {
-  //   // This effect runs whenever questions state changes
-  //   if (questions.length > 0) {
-  //     // Questions have been set, you can proceed with any logic here
-  //     console.log(questions);
-  //     setShowNext("visible");
-  //   }
-  // }, [questions]);
-
   const handleNext = () => {
     navigate("/quiz");
   };
@@ -39,7 +30,7 @@ const LevelsPage = () => {
           }`,
         },
       ],
-      model: "gpt-3.5-turbo",
+      model: "gpt-4",
     });
 
     return completion.choices[0].message.content;
@@ -60,7 +51,7 @@ const LevelsPage = () => {
           }`,
         },
       ],
-      model: "gpt-3.5-turbo",
+      model: "gpt-4",
     });
 
     const falseAnswer = completion.choices[0].message.content;
@@ -75,7 +66,7 @@ const LevelsPage = () => {
           content: `Create an answer this quiz question: ${question}. Return the answer and nothing else, do not reply with anything but the answer.`,
         },
       ],
-      model: "gpt-3.5-turbo",
+      model: "gpt-4",
     });
 
     const answer = completion.choices[0].message.content;
