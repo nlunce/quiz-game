@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 const HomePage = () => {
   const [submit, setSubmit] = useState();
-  const [isSubmitting, setIsSubmitting] = useState();
+  // const [isSubmitting, setIsSubmitting] = useState();
   const [play, setPlay] = useState(true);
   const [apiKey, setApiKey] = useState("");
   const [invalid, setInvalid] = useState("hidden");

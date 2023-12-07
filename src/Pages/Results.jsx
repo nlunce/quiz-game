@@ -1,21 +1,21 @@
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-// import QUESTIONS from "../Questions/questions.js";
+import { questions as QUESTIONS } from "../questions";
 import { Results } from "../ui-components";
 
 const ResultsPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { userResponses, QUESTIONS } = location.state;
+  const { userResponses } = location.state;
 
   // Calculate the user's score
   const calculateScore = () => {
     let score = 0;
 
     userResponses.forEach((response, index) => {
-      const correctAnswerIndex = QUESTIONS[index].correct - 1; // Adjust for array indexing (correct is 1-based)
+      const correctAnswerIndex = QUESTIONS[index].correct; // Adjust for array indexing (correct is 1-based)
 
-      if (response === correctAnswerIndex + 1) {
+      if (response === correctAnswerIndex) {
         score++;
       }
     });
@@ -29,11 +29,12 @@ const ResultsPage = () => {
     Score: { children: userScore },
     Button: {
       onClick: () => {
+        QUESTIONS.length = 0;
         navigate("/");
       },
     },
   };
-
+  //
   return (
     <>
       <Results overrides={overrides} />

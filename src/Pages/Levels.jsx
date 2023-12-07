@@ -1,36 +1,42 @@
 import { GradeLevels } from "../ui-components";
 import OpenAI from "openai";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-// import { useQuestionsState } from "../Questions/questionsState";
+import { questions } from "../questions";
 
 const LevelsPage = () => {
   const apiKey = localStorage.getItem("apiKey");
   const navigate = useNavigate();
   const [showNext, setShowNext] = useState("hidden");
-  const [questions, setQuestions] = useState([]);
 
-  useEffect(() => {
-    // This effect runs whenever questions state changes
-    if (questions.length > 0) {
-      // Questions have been set, you can proceed with any logic here
-      console.log(questions);
-      setShowNext("visible");
-    }
-  }, [questions]);
+  // useEffect(() => {
+  //   // This effect runs whenever questions state changes
+  //   if (questions.length > 0) {
+  //     // Questions have been set, you can proceed with any logic here
+  //     console.log(questions);
+  //     setShowNext("visible");
+  //   }
+  // }, [questions]);
 
   const handleNext = () => {
-    navigate("/quiz", { state: { questions } });
+    navigate("/quiz");
   };
 
   const openai = new OpenAI({ apiKey, dangerouslyAllowBrowser: true });
 
-  async function getQuestion(gradeLevel) {
+  async function getQuestion(gradeLevel, excludedQuestions = null) {
     const completion = await openai.chat.completions.create({
       messages: [
         {
           role: "user",
-          content: `Create a ${gradeLevel}-grade-level quiz question. Return the question and nothing else, do not reply with anything but the question.`,
+          content: `Create a ${gradeLevel}-grade-level quiz question. 
+          Return the question and nothing else, do not reply with anything but the question. 
+          ${
+            excludedQuestions
+              ? "Do not use any of these questions or any variation of them: " +
+                excludedQuestions.join(", ")
+              : ""
+          }`,
         },
       ],
       model: "gpt-3.5-turbo",
@@ -39,19 +45,26 @@ const LevelsPage = () => {
     return completion.choices[0].message.content;
   }
 
-  async function getFalseAnswer(question) {
+  async function getFalseAnswer(question, excludedAnswers = null) {
     const completion = await openai.chat.completions.create({
       messages: [
         {
           role: "user",
-          content: `Create a false but possible answer this quiz question: ${question}. Return the false but possible answer and nothing else, do not reply with anything but the false but possible answer.`,
+          content: `Create a false but possible answer this quiz question: ${question}. 
+          Return the false but possible answer and nothing else, do not reply with anything but the false but possible answer. 
+          ${
+            excludedAnswers
+              ? "Do not use any of these answers or any variation of them: " +
+                excludedAnswers.join(", ")
+              : ""
+          }`,
         },
       ],
       model: "gpt-3.5-turbo",
     });
 
-    const falseAnswser = completion.choices[0].message.content;
-    return falseAnswser;
+    const falseAnswer = completion.choices[0].message.content;
+    return falseAnswer;
   }
 
   async function getAnswer(question) {
@@ -70,14 +83,38 @@ const LevelsPage = () => {
   }
 
   async function handleOptionClick(gradeLevel) {
-    const newQuestions = [];
+    const existingQuestions = [];
 
-    for (var i = 0; i < 5; i++) {
-      const question = await getQuestion(gradeLevel);
+    const firstQuestion = await getQuestion(gradeLevel);
+    const firstAnswers = [];
+    const falseAnswer = await getFalseAnswer(firstQuestion);
+    firstAnswers.push(falseAnswer);
+
+    for (var h = 0; h < 2; h++) {
+      const falseAnswer = await getFalseAnswer(firstQuestion, firstAnswers);
+      firstAnswers.push(falseAnswer);
+    }
+
+    const firstCorrectAnswer = await getAnswer(firstQuestion);
+    firstAnswers.push(firstCorrectAnswer);
+
+    const firstQuestionObject = {
+      question: firstQuestion,
+      answers: firstAnswers,
+      correct: 3,
+    };
+
+    questions.push(firstQuestionObject);
+
+    for (var i = 0; i < 4; i++) {
+      const question = await getQuestion(gradeLevel, existingQuestions);
       const answers = [];
 
-      for (var j = 0; j < 3; j++) {
-        const falseAnswer = await getFalseAnswer(question);
+      const falseAnswer = await getFalseAnswer(question);
+      answers.push(falseAnswer);
+
+      for (var j = 0; j < 2; j++) {
+        const falseAnswer = await getFalseAnswer(question, answers);
         answers.push(falseAnswer);
       }
 
@@ -89,10 +126,10 @@ const LevelsPage = () => {
         answers: answers,
         correct: 3,
       };
-      newQuestions.push(questionObject);
+      questions.push(questionObject);
     }
-
-    setQuestions(newQuestions);
+    console.log(questions);
+    setShowNext("visible");
   }
 
   const overrides = {
