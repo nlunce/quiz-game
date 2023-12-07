@@ -1,12 +1,12 @@
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import QUESTIONS from "../Questions/questions.js";
+// import QUESTIONS from "../Questions/questions.js";
 import { Results } from "../ui-components";
 
 const ResultsPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { userResponses } = location.state;
+  const { userResponses, QUESTIONS } = location.state;
 
   // Calculate the user's score
   const calculateScore = () => {

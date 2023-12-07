@@ -1,38 +1,39 @@
 import { Quiz } from "../ui-components";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-
-import QUESTIONS from "../Questions/questions.js";
+import { useNavigate, useLocation } from "react-router-dom";
+// import { questions as QUESTIONS } from "../Questions/questions.js"; // Adjust the path accordingly
 
 const QuizPage = () => {
   const navigate = useNavigate();
-
+  const location = useLocation();
+  const { QUESTIONS } = location.state;
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [userResponses, setUserResponses] = useState([]);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
-  const [showNextQuestion, setShowNextQuestion] = useState("hidden");
 
   const currentQuestion = QUESTIONS[currentQuestionIndex];
   const answers = currentQuestion.answers;
 
   const handleOptionClick = (index) => {
     setSelectedAnswer(index);
-    setShowNextQuestion("visible");
   };
 
   const handleNextQuestion = () => {
-    // Store the user's response for the current question
-    setUserResponses([...userResponses, selectedAnswer]);
+    if (selectedAnswer !== null) {
+      // Store the user's response for the current question
+      setUserResponses([...userResponses, selectedAnswer]);
 
-    if (currentQuestionIndex + 1 < QUESTIONS.length) {
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
-      setSelectedAnswer(null);
-      setShowNextQuestion("hidden");
-    } else {
-      // Navigate to the results page with the userResponses
-      navigate("/results", { state: { userResponses } });
+      if (currentQuestionIndex + 1 < QUESTIONS.length) {
+        setCurrentQuestionIndex(currentQuestionIndex + 1);
+        setSelectedAnswer(null);
+      } else {
+        // Navigate to the results page with the userResponses
+        navigate("/results", { state: { userResponses, QUESTIONS } });
+      }
     }
   };
+
+  const showNextQuestion = selectedAnswer !== null ? "visible" : "hidden";
 
   const overrides = {
     Question: { children: currentQuestion.question },

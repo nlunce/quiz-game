@@ -1,92 +1,107 @@
 import { GradeLevels } from "../ui-components";
 import OpenAI from "openai";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+// import { useQuestionsState } from "../Questions/questionsState";
 
 const LevelsPage = () => {
   const apiKey = localStorage.getItem("apiKey");
   const navigate = useNavigate();
   const [showNext, setShowNext] = useState("hidden");
+  const [questions, setQuestions] = useState([]);
 
-  class Question {
-    question;
-    answers = [];
-    correct = 3;
-
-    constructor(apiKey, gradeLevel) {
-      this.apiKey = apiKey;
-      this.gradeLevel = gradeLevel;
-      this.openai = new OpenAI({ apiKey, dangerouslyAllowBrowser: true });
-      this.getQuestion();
-      this.getFalseAnswers();
-      this.getAnswer();
+  useEffect(() => {
+    // This effect runs whenever questions state changes
+    if (questions.length > 0) {
+      // Questions have been set, you can proceed with any logic here
+      console.log(questions);
+      setShowNext("visible");
     }
-
-    async getQuestion() {
-      const completion = await this.openai.chat.completions.create({
-        messages: [
-          {
-            role: "user",
-            content: `Create a ${this.gradeLevel}-grade-level quiz question. Return the question and nothing else, do not reply with anything but the question.`,
-          },
-        ],
-        model: "gpt-3.5-turbo",
-      });
-
-      this.question = completion.choices[0].message.content;
-    }
-
-    async getFalseAnswers(question) {
-      for (var i = 0; i < 3; i++) {
-        const completion = await this.openai.chat.completions.create({
-          messages: [
-            {
-              role: "user",
-              content: `Create a false but possible answer this quiz question: ${question}. Return the false but possible answer and nothing else, do not reply with anything but the false but possible answer.`,
-            },
-          ],
-          model: "gpt-3.5-turbo",
-        });
-
-        const falseAnswser = completion.choices[0].message.content;
-        this.answers.push(falseAnswser);
-      }
-    }
-    async getAnswer(question) {
-      const completion = await this.openai.chat.completions.create({
-        messages: [
-          {
-            role: "user",
-            content: `Create an answer this quiz question: ${question}. Return the answer and nothing else, do not reply with anything but the answer.`,
-          },
-        ],
-        model: "gpt-3.5-turbo",
-      });
-
-      const answser = completion.choices[0].message.content;
-      this.answers.push(answser);
-    }
-  }
-
-  class Questions {
-    questions = [];
-  }
+  }, [questions]);
 
   const handleNext = () => {
-    navigate("/quiz");
+    navigate("/quiz", { state: { questions } });
   };
 
-  const handleOptionClick = () => {
-    setShowNext("visible");
-  };
+  const openai = new OpenAI({ apiKey, dangerouslyAllowBrowser: true });
+
+  async function getQuestion(gradeLevel) {
+    const completion = await openai.chat.completions.create({
+      messages: [
+        {
+          role: "user",
+          content: `Create a ${gradeLevel}-grade-level quiz question. Return the question and nothing else, do not reply with anything but the question.`,
+        },
+      ],
+      model: "gpt-3.5-turbo",
+    });
+
+    return completion.choices[0].message.content;
+  }
+
+  async function getFalseAnswer(question) {
+    const completion = await openai.chat.completions.create({
+      messages: [
+        {
+          role: "user",
+          content: `Create a false but possible answer this quiz question: ${question}. Return the false but possible answer and nothing else, do not reply with anything but the false but possible answer.`,
+        },
+      ],
+      model: "gpt-3.5-turbo",
+    });
+
+    const falseAnswser = completion.choices[0].message.content;
+    return falseAnswser;
+  }
+
+  async function getAnswer(question) {
+    const completion = await openai.chat.completions.create({
+      messages: [
+        {
+          role: "user",
+          content: `Create an answer this quiz question: ${question}. Return the answer and nothing else, do not reply with anything but the answer.`,
+        },
+      ],
+      model: "gpt-3.5-turbo",
+    });
+
+    const answer = completion.choices[0].message.content;
+    return answer;
+  }
+
+  async function handleOptionClick(gradeLevel) {
+    const newQuestions = [];
+
+    for (var i = 0; i < 5; i++) {
+      const question = await getQuestion(gradeLevel);
+      const answers = [];
+
+      for (var j = 0; j < 3; j++) {
+        const falseAnswer = await getFalseAnswer(question);
+        answers.push(falseAnswer);
+      }
+
+      const correctAnswer = await getAnswer(question);
+      answers.push(correctAnswer);
+
+      const questionObject = {
+        question: question,
+        answers: answers,
+        correct: 3,
+      };
+      newQuestions.push(questionObject);
+    }
+
+    setQuestions(newQuestions);
+  }
 
   const overrides = {
-    "First Grade": { onClick: () => handleOptionClick() },
-    "Second Grade": { onClick: () => handleOptionClick() },
-    "Third Grade": { onClick: () => handleOptionClick() },
-    "Fourth Grade": { onClick: () => handleOptionClick() },
-    "Fifth Grade": { onClick: () => handleOptionClick() },
-    "Sixth Grade": { onClick: () => handleOptionClick() },
+    "First Grade": { onClick: () => handleOptionClick("first") },
+    "Second Grade": { onClick: () => handleOptionClick("second") },
+    "Third Grade": { onClick: () => handleOptionClick("third") },
+    "Fourth Grade": { onClick: () => handleOptionClick("fourth") },
+    "Fifth Grade": { onClick: () => handleOptionClick("fifth") },
+    "Sixth Grade": { onClick: () => handleOptionClick("sixth") },
     Button: {
       style: {
         cursor: "pointer",
@@ -95,6 +110,7 @@ const LevelsPage = () => {
       onClick: handleNext,
     },
   };
+
   return <GradeLevels overrides={overrides} />;
 };
 
